@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tool tổng hợp CRM – NTS Hanoi</title>
+<link rel="icon" type="image/png" href="{{LOGO}}">
+<link rel="apple-touch-icon" href="{{LOGO}}">
+<meta name="description" content="Tool offline tổng hợp – phân tích dữ liệu thương vụ CRM. Phòng Quản lý sản phẩm – Công ty Nam Trường Sơn Hà Nội.">
+<style>
+/*{{CSS}}*/
+</style>
+</head>
+<body>
+<header class="app-header">
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-logo"><img src="{{LOGO}}" alt="NTS Hanoi Corp."></div>
+      <div class="brand-text">
+        <div class="brand-company">NTS Hanoi Corp. · Phòng Quản lý sản phẩm</div>
+        <div class="brand-title">Tool tổng hợp <span>CRM</span></div>
+        <div class="brand-sub">Tổng hợp – phân tích thương vụ / dự án sale đăng ký trên CRM</div>
+      </div>
+    </div>
+    <div class="header-meta" id="headerMeta"></div>
+  </div>
+</header>
+
+<main id="main">
+  <!-- ====================== MÀN HÌNH NẠP FILE ====================== -->
+  <section id="landing" class="landing">
+    <div class="dropzone" id="dropzone">
+      <div class="dz-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 18v-6"/><path d="m9 15 3-3 3 3"/></svg>
+      </div>
+      <h2>Kéo – thả file Excel CRM vào đây</h2>
+      <p>File export Deals từ CRM (raw) <b>hoặc</b> file template chuẩn đã convert (.xlsx)</p>
+      <div class="dz-actions">
+        <button class="btn btn-primary" id="btnPick">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></svg>
+          Chọn file Excel
+        </button>
+        <button class="btn hidden" id="btnRestore">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+          <span>Mở lại dữ liệu lần trước</span>
+        </button>
+      </div>
+      <div class="dz-ref">
+        <label for="refDateInput">Ngày chốt số liệu:</label>
+        <input type="date" id="refDateInput">
+        <span class="muted" style="font-size:12px">(để trống = lấy theo tên file, không có thì lấy hôm nay)</span>
+      </div>
+      <div class="dz-progress hidden" id="dzProgress"><i></i></div>
+      <div class="dz-note">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+        Xử lý 100% trên máy bạn – không cần internet, không gửi dữ liệu đi đâu.
+      </div>
+      <input type="file" id="fileInput" accept=".xlsx,.xlsm,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg></div>
+        <div><h3>1. Nạp file raw export từ CRM</h3><p>Kéo – thả hoặc chọn file <i>export.deals.report…xlsx</i>. Tool nhận diện tự động file raw hay file template chuẩn.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4v6h6"/><path d="M20 20v-6h-6"/><path d="M20 9A8 8 0 0 0 6 5.3L4 10"/><path d="M4 15a8 8 0 0 0 14 3.7l2-3.7"/></svg></div>
+        <div><h3>2. Tự động convert sang template chuẩn</h3><p>Chuẩn hoá tên KH, phân nhóm KH, xác định hãng, giá trị VND, deal size, tách deal nhiều hãng và gắn cờ chất lượng dữ liệu.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg></div>
+        <div><h3>3. Tìm kiếm, lọc &amp; phân tích</h3><p>Lọc đồng thời theo sale, giai đoạn, trạng thái, giá trị, timeline, nhóm KH, hãng, reseller, cờ nhắc. Biểu đồ cập nhật theo bộ lọc.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/></svg></div>
+        <div><h3>4. Tải file chuẩn &amp; xuất báo cáo Excel</h3><p>Tải file template chuẩn sau convert và xuất báo cáo <i>Tổng hợp CRM_ Tháng M.YYYY.xlsx</i> nhiều sheet thống kê.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== DASHBOARD ====================== -->
+  <section id="dashboard" class="hidden">
+    <div class="filterbar" id="filterbar">
+      <div class="fb-row">
+        <div class="search" id="searchBox">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="q" type="text" autocomplete="off" spellcheck="false" placeholder="Tìm khách hàng, thương vụ, sale, hãng, reseller, ID…">
+          <button class="clear-q" id="clearQ" title="Xoá"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+          <kbd>/</kbd>
+          <div class="suggest hidden" id="suggest"></div>
+        </div>
+        <div id="pills" style="display:contents"></div>
+        <div class="fb-count" id="fbCount"></div>
+      </div>
+      <div class="fb-row">
+        <div class="qchips" id="qchips"></div>
+      </div>
+      <div class="fb-row hidden" id="afRow">
+        <div class="active-filters" id="activeFilters"></div>
+      </div>
+    </div>
+
+    <div class="alert hidden" id="staleAlert"></div>
+
+    <div class="kpis" id="kpis"></div>
+
+    <div class="insights">
+      <div class="insight" id="insStatus"></div>
+      <div class="insight dark" id="insStale"></div>
+    </div>
+
+    <div class="grid grid-60">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">Thương vụ theo Sale</div><div class="card-hint">bấm cột để lọc</div>
+          <div class="card-tools"><div class="seg" data-mode="sale"><button data-v="count" class="on">Số deal</button><button data-v="value">Giá trị</button></div></div>
+        </div>
+        <div class="card-body"><div class="chart-box" style="height:320px"><canvas id="chSale"></canvas></div>
+          <div class="legend"><span><i style="background:var(--c-active)"></i>Active</span><span><i style="background:var(--c-won)"></i>Won</span><span><i style="background:var(--c-lost)"></i>Lost</span></div></div>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">Thương vụ theo Hãng</div><div class="card-hint">bấm thanh để lọc</div>
+          <div class="card-tools"><div class="seg" data-mode="vendor"><button data-v="count" class="on">Số deal</button><button data-v="value">Giá trị</button></div></div>
+        </div>
+        <div class="card-body"><div class="chart-scroll"><div class="chart-box" id="boxVendor"><canvas id="chVendor"></canvas></div></div></div>
+      </div>
+    </div>
+
+    <div class="grid grid-3">
+      <div class="card">
+        <div class="card-head"><div class="card-title">Phễu giai đoạn</div><div class="card-hint">bấm để lọc</div>
+          <div class="card-tools"><div class="seg" data-mode="stage"><button data-v="count" class="on">Số deal</button><button data-v="value">Giá trị</button></div></div></div>
+        <div class="card-body"><div class="chart-box" style="height:260px"><canvas id="chStage"></canvas></div></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div class="card-title">Khoảng giá trị thương vụ</div><div class="card-hint">bấm để lọc</div></div>
+        <div class="card-body"><div class="chart-box" style="height:260px"><canvas id="chBand"></canvas></div></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div class="card-title">Phân loại hợp đồng</div><div class="card-hint">bấm để lọc</div></div>
+        <div class="card-body"><div class="chart-box" style="height:260px"><canvas id="chCtype"></canvas></div></div>
+      </div>
+    </div>
+
+    <div class="grid grid-2">
+      <div class="card">
+        <div class="card-head"><div class="card-title">Phân nhóm khách hàng</div><div class="card-hint">bấm thanh để lọc</div>
+          <div class="card-tools"><div class="seg" data-mode="segment"><button data-v="count" class="on">Số deal</button><button data-v="value">Giá trị</button></div></div></div>
+        <div class="card-body"><div class="chart-box" style="height:330px"><canvas id="chSegment"></canvas></div></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div class="card-title">Reseller</div><div class="card-hint">bấm thanh để lọc</div>
+          <div class="card-tools"><div class="seg" data-mode="reseller"><button data-v="count" class="on">Số deal</button><button data-v="value">Giá trị</button></div></div></div>
+        <div class="card-body"><div class="chart-scroll"><div class="chart-box" id="boxReseller"><canvas id="chReseller"></canvas></div></div></div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="card-head"><div class="card-title">Xu hướng theo tháng</div><div class="card-hint" id="trendHint">số thương vụ tạo mới mỗi tháng, chia theo trạng thái hiện tại</div>
+          <div class="card-tools">
+            <div class="seg" data-mode="trendBy"><button data-v="created" class="on">Theo tháng tạo</button><button data-v="close">Theo tháng dự kiến close</button></div>
+            <div class="seg" data-mode="trend"><button data-v="count" class="on">Số deal</button><button data-v="value">Giá trị</button></div>
+          </div></div>
+        <div class="card-body"><div class="chart-box" style="height:280px"><canvas id="chTrend"></canvas></div>
+          <div class="legend"><span><i style="background:var(--c-active)"></i>Active</span><span><i style="background:var(--c-won)"></i>Won</span><span><i style="background:var(--c-lost)"></i>Lost</span></div></div>
+      </div>
+    </div>
+
+    <div class="card" id="tableCard">
+      <div class="tabs" id="tabs"></div>
+      <div class="table-toolbar" id="tableToolbar"></div>
+      <div class="tbl-wrap" id="tblWrap"></div>
+      <div class="pager" id="pager"></div>
+    </div>
+  </section>
+</main>
+
+<footer class="app-footer">
+  <div class="footer-inner">
+    <div class="fl"><img src="{{LOGO}}" alt=""><span>Dữ liệu được tổng hợp nội bộ từ <b>phòng Quản lý sản phẩm - Công ty Nam Trường Sơn Hà Nội</b></span></div>
+    <div style="opacity:.75">Tool chạy offline · Dữ liệu không rời khỏi máy tính của bạn</div>
+  </div>
+</footer>
+
+<div class="toasts" id="toasts"></div>
+
+<script>
+/*{{CHARTJS}}*/
+</script>
+<script>
+/*{{XLSXIO}}*/
+</script>
+<script>
+/*{{CONVERT}}*/
+</script>
+<script>
+/*{{APP}}*/
+</script>
+</body>
+</html>
