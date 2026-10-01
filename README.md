@@ -3,7 +3,9 @@
 Tool HTML **một file duy nhất, chạy offline** để tổng hợp và phân tích dữ liệu thương vụ (deals) export từ CRM.
 Dữ liệu được xử lý ngay trên trình duyệt: không cần internet, không gửi đi đâu.
 
-**Dùng tool:** mở file [`Tool tổng hợp CRM.html`](Tool%20tổng%20hợp%20CRM.html) bằng Chrome / Edge / Firefox (bản mới), kéo – thả file Excel vào.
+**Dùng tool:**
+- Online: https://pm-ntshn.github.io/Tool-CRM/ (GitHub Pages, phục vụ file `index.html`). File Excel nạp vào chỉ được xử lý trên trình duyệt của người dùng, không tải lên máy chủ.
+- Offline: mở file [`Tool tổng hợp CRM.html`](Tool%20tổng%20hợp%20CRM.html) (giống hệt `index.html`) bằng Chrome / Edge / Firefox (bản mới), kéo – thả file Excel vào.
 
 ## Luồng xử lý
 1. Nạp file **raw export từ CRM** (`export.deals.report…xlsx`), hoặc file **template chuẩn** đã convert (sheet `Data`). Tool tự nhận diện loại file.
@@ -24,7 +26,7 @@ Dữ liệu được xử lý ngay trên trình duyệt: không cần internet, 
 | `src/app.js` | Dashboard: bộ lọc, gợi ý tìm kiếm, biểu đồ, bảng, chi tiết, soạn nội dung nhắc |
 | `vendor/chart.umd.min.js` | Chart.js 4.5.1 (MIT) |
 
-Build lại file HTML sau khi sửa mã nguồn:
+Build lại file HTML (tạo cả `Tool tổng hợp CRM.html` và `index.html`) sau khi sửa mã nguồn:
 ```bash
 node build.mjs
 ```

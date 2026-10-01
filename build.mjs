@@ -21,4 +21,6 @@ for (const [k, v] of Object.entries(parts)) html = html.replace(`/*{{${k}}}*/`, 
 html = html.replaceAll('{{LOGO}}', logo);
 const out = path.join(root, 'Tool tổng hợp CRM.html');
 fs.writeFileSync(out, html);
-console.log(`Đã tạo ${path.basename(out)} (${(html.length / 1024).toFixed(0)} KB)`);
+// index.html: trang chính khi publish bằng GitHub Pages (https://pm-ntshn.github.io/Tool-CRM/)
+fs.writeFileSync(path.join(root, 'index.html'), html);
+console.log(`Đã tạo ${path.basename(out)} và index.html (${(html.length / 1024).toFixed(0)} KB)`);
